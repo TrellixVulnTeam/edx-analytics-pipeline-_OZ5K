@@ -6,7 +6,7 @@ import os
 import shutil
 import unittest
 
-import boto
+import boto3
 import pandas
 from pandas.util.testing import assert_frame_equal, assert_series_equal
 
@@ -28,7 +28,7 @@ def when_s3_available(function):
             # ^ The above line will not error out if AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
             # are set, so it can't be used to check if we have a valid connection to S3. Instead:
             connection.get_all_buckets()
-        except (boto.exception.S3ResponseError, boto.exception.NoAuthHandlerFound):
+        except (boto3.exception.S3ResponseError, boto3.exception.NoAuthHandlerFound):
             s3_available = False
         else:
             s3_available = True

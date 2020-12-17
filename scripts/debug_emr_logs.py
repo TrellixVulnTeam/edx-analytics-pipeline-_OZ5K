@@ -4,7 +4,7 @@ import gzip
 import os
 import re
 import shutil
-import boto.emr
+import boto3.emr
 
 from subprocess import Popen, PIPE
 
@@ -53,7 +53,7 @@ def main():
         exit(arg_parser.print_usage())
 
     if not args.job_flow_name:
-        connection = boto.emr.connect_to_region(DEFAULT_REGION)
+        connection = boto3.emr.connect_to_region(DEFAULT_REGION)
         for cluster in connection.list_clusters().clusters:
             if cluster.name == args.cluster_name:
                 args.job_flow_name = cluster.id

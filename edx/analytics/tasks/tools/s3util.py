@@ -3,7 +3,7 @@
 import argparse
 import os
 
-from boto import connect_s3
+from boto3 import connect_s3
 
 from edx.analytics.tasks.util.s3_util import generate_s3_sources, get_s3_key, join_as_s3_url
 

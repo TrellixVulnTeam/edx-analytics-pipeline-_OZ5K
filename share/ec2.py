@@ -5,10 +5,10 @@ EC2 external inventory script
 =================================
 
 Generates inventory that Ansible can understand by making API request to
-AWS EC2 using the Boto library.
+AWS EC2 using the boto3.library.
 
 NOTE: This script assumes Ansible is being executed where the environment
-variables needed for Boto have already been set:
+variables needed for boto3.have already been set:
     export AWS_ACCESS_KEY_ID='AK123'
     export AWS_SECRET_ACCESS_KEY='abc123'
 
@@ -17,7 +17,7 @@ you need to define:
 
     export EC2_URL=http://hostname_of_your_cc:port/services/Eucalyptus
 
-For more details, see: http://docs.pythonboto.org/en/latest/boto_config_tut.html
+For more details, see: http://docs.pythonboto3.org/en/latest/boto3.config_tut.html
 
 When run against a specific host, this script returns the following variables:
  - ec2_ami_launch_index
@@ -76,7 +76,7 @@ When run against a specific host, this script returns the following variables:
  - ec2_virtualization_type
  - ec2_vpc_id
 
-These variables are pulled out of a boto.ec2.instance object. There is a lack of
+These variables are pulled out of a boto3.ec2.instance object. There is a lack of
 consistency with variable spellings (camelCase and underscores) since this
 just loops through all variables the object exposes. It is preferred to use the
 ones with underscores when multiple exist.
@@ -113,10 +113,10 @@ import os
 import argparse
 import re
 from time import time
-import boto
-from boto import ec2
-from boto import rds
-from boto import route53
+import boto3.
+from boto3. import ec2
+from boto3. import rds
+from boto3. import route53
 import ConfigParser
 
 try:
@@ -195,7 +195,7 @@ class Ec2Inventory(object):
         configRegions_exclude = config.get('ec2', 'regions_exclude')
         if (configRegions == 'all'):
             if self.eucalyptus_host:
-                self.regions.append(boto.connect_euca(host=self.eucalyptus_host).region.name)
+                self.regions.append(boto3.connect_euca(host=self.eucalyptus_host).region.name)
             else:
                 for regionInfo in ec2.regions():
                     if regionInfo.name not in configRegions_exclude:
@@ -259,7 +259,7 @@ class Ec2Inventory(object):
 
         try:
             if self.eucalyptus:
-                conn = boto.connect_euca(host=self.eucalyptus_host)
+                conn = boto3.connect_euca(host=self.eucalyptus_host)
                 conn.APIVersion = '2010-08-31'
             else:
                 conn = ec2.connect_to_region(region)
@@ -275,7 +275,7 @@ class Ec2Inventory(object):
                 for instance in instances:
                     self.add_instance(instance, region)
 
-        except boto.exception.BotoServerError as e:
+        except boto3.exception.boto3.erverError as e:
             if  not self.eucalyptus:
                 print "Looks like AWS is down again:"
             print e
@@ -291,7 +291,7 @@ class Ec2Inventory(object):
                 instances = conn.get_all_dbinstances()
                 for instance in instances:
                     self.add_rds_instance(instance, region)
-        except boto.exception.BotoServerError as e:
+        except boto3.exception.boto3.erverError as e:
             print "Looks like AWS RDS is down: "
             print e
             sys.exit(1)
@@ -299,7 +299,7 @@ class Ec2Inventory(object):
     def get_instance(self, region, instance_id):
         ''' Gets details about a specific instance '''
         if self.eucalyptus:
-            conn = boto.connect_euca(self.eucalyptus_host)
+            conn = boto3.connect_euca(self.eucalyptus_host)
             conn.APIVersion = '2010-08-31'
         else:
             conn = ec2.connect_to_region(region)
@@ -364,8 +364,8 @@ class Ec2Inventory(object):
                 key = self.to_safe("security_group_" + group.name)
                 self.push(self.inventory, key, dest)
         except AttributeError:
-            print 'Package boto seems a bit older.'
-            print 'Please upgrade boto >= 2.3.0.'
+            print 'Package boto3.seems a bit older.'
+            print 'Please upgrade boto3.>= 2.3.0.'
             sys.exit(1)
 
         # Inventory: Group by tag keys
@@ -423,8 +423,8 @@ class Ec2Inventory(object):
                 key = self.to_safe("security_group_" + instance.security_group.name)
                 self.push(self.inventory, key, dest)
         except AttributeError:
-            print 'Package boto seems a bit older.'
-            print 'Please upgrade boto >= 2.3.0.'
+            print 'Package boto3.seems a bit older.'
+            print 'Please upgrade boto3.>= 2.3.0.'
             sys.exit(1)
 
         # Inventory: Group by engine

@@ -3,8 +3,8 @@
 import json
 import time
 
-from boto.connection import AWSAuthConnection
-from boto.exception import BotoServerError
+from boto3.connection import AWSAuthConnection
+from boto3.exception import BotoServerError
 from elasticsearch import Connection
 
 
